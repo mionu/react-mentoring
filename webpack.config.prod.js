@@ -20,6 +20,7 @@ module.exports = {
             exclude: /node_modules/,
             loader: "babel-loader",
             options: {
+                plugins: ['@babel/plugin-proposal-class-properties'],
                 presets: ['@babel/preset-react', '@babel/preset-env'],
             },
         }, {
@@ -32,7 +33,7 @@ module.exports = {
         }],
     },
     optimization: {
-        minimizer: [new TerserPlugin()],
+        minimizer: [new TerserPlugin({ test: /\.jsx?/, })],
     },
     plugins: [
         new HtmlWebpackPlugin({ template: '../index.html' }),
