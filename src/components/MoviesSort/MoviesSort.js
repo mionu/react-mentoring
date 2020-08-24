@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function MoviesSort(props) {
+export default function MoviesSort() {
     const [sort, setSort] = React.useState('releaseDate');
     const classes = useStyles();
 
@@ -29,7 +29,7 @@ export default function MoviesSort(props) {
         setSort(event.target.value);
     }
 
-    return <div class='sort-by'>
+    return <div className='sort-by'>
         <InputLabel id='sort-by-label'>Sort by</InputLabel>
         <Select
             labelId='sort-by-label'

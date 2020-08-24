@@ -2,7 +2,7 @@ import React from 'react';
 import './Search.scss';
 import { TextField, Button } from '@material-ui/core';
 
-export default function Search(props) {
+export default function Search() {
     return <>
         <h1>FIND YOUR MOVIE</h1>
         <div className='search'>

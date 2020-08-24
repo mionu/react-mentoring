@@ -7,12 +7,15 @@ import Search from '../../components/Search';
 import MoviesList from '../../components/MoviesList';
 
 export default class Home extends React.Component {
-    movies = [];
+    constructor(props) {
+        super(props);
 
-    componentWillMount() {
-        console.log(store);
+        this.state = { movies: [] };
+    }
+
+    componentDidMount() {
         this.unsubscribe = store.subscribe(() => {
-            this.movies = store.getState().movies;
+            this.setState({ movies: store.getState().movies || [] });
         });
 
         store.dispatch({ type: 'GET_MOVIES_LIST' });
@@ -22,12 +25,12 @@ export default class Home extends React.Component {
         this.unsubscribe();
     }
 
-    render (props) {
+    render () {
         return <ErrorBoundary>
             <Header />
             <Container>
                 <Search />
-                <MoviesList movies={this.movies} />
+                <MoviesList movies={this.state.movies} />
             </Container>
         </ErrorBoundary>;
     };
