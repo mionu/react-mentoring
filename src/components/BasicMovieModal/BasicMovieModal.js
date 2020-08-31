@@ -18,14 +18,16 @@ export default function BasicMovieModal(props) {
 
     return <Dialog open={props.open} onClose={props.onClose}>
         <DialogTitle disableTypography className={classes.header}>
-            <Typography variant="h6">{props.headerText}</Typography>
-            <IconButton aria-label="close" onClick={props.onClose}>
+            <Typography variant='h6'>{props.headerText}</Typography>
+            <IconButton aria-label='close' onClick={props.onClose}>
                 <CloseIcon />
             </IconButton>
         </DialogTitle>
         <DialogContent>{props.children}</DialogContent>
         <DialogActions>
-            {props.onReset ? <Button onClick={props.onReset}>Reset</Button> : null}
+            {props.onReset
+                ? <Button onClick={props.onReset}>Reset</Button>
+                : <Button onClick={props.onClose}>Cancel</Button>}
             <Button onClick={props.onSubmit} color='primary'>Submit</Button>
         </DialogActions>
     </Dialog>;
@@ -34,6 +36,7 @@ export default function BasicMovieModal(props) {
 BasicMovieModal.propTypes = {
     open: PropTypes.bool.isRequired,
     headerText: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onReset: PropTypes.func,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, MenuItem } from '@material-ui/core';
+import { TextField, MenuItem, FormControl, InputLabel, Select } from '@material-ui/core';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import _ from 'lodash';
@@ -11,7 +11,7 @@ const defaultState = {
     title: '',
     releaseDate: null,
     url: '',
-    genre: 0,
+    genres: [],
     overview: '',
     runtime: '',
 };
@@ -94,18 +94,30 @@ export default function AddEditModal(props) {
                 value={movie?.url}
                 onChange={handleInput.bind(that, 'url')}
             />
-            <TextField
-                {...defaultProps}
-                label='Genre'
-                select
-                value={movie?.genre}
-                onChange={handleInput.bind(that, 'genre')}
-            >
-                <MenuItem key={0} value={0}>SELECT GENRE</MenuItem>
-                {staticGenres.map((genre, i) =>
-                    <MenuItem key={i} value={i+1}>{genre.toUpperCase()}</MenuItem>
-                )}
-            </TextField>
+            <FormControl {...defaultProps}>
+                <InputLabel shrink id='genres-select'>Genre</InputLabel>
+                <Select
+                    labelId='genres-select'
+                    multiple
+                    displayEmpty
+                    renderValue={(selected) => {
+                        const filtered = selected.filter(s => staticGenres[s]);
+                        if (filtered.length === 0) {
+                                return 'Select genre';
+                            }
+                
+                        return filtered.map(s => staticGenres[s]).join(', ');
+                        }
+                    }
+                    value={movie?.genres}
+                    onChange={handleInput.bind(that, 'genres')}
+                >
+                    <MenuItem disabled value=''>Select genre</MenuItem>
+                    {staticGenres.map((genre, i) =>
+                        <MenuItem key={i} value={i}>{genre}</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
             <TextField
                 {...defaultProps}
                 label='Overview'
