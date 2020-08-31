@@ -1,23 +1,34 @@
 import React from 'react';
-import './Movie.scss';
+import { IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     moreIcon: {
-        border: '1px solid #000',
+        border: '1px solid #333',
         borderRadius: '50%',
-        cursor: 'pointer',
         marginRight: 5,
         marginTop: 5,
         right: 0,
+        padding: 7,
         position: 'absolute',
         top: 0,
+    },
+    moviePoster: {
+        position: 'relative',
+        width: 300,
     },
     movieTitle: {
         fontSize: 18,
         fontWeight: 600,
+    },
+    movieTitleRow: {
+        alignItems: 'baseline',
+        display: 'flex',
+        justifyContent: 'space-between',
+        paddingBottom: 7,
+        paddingTop: 5,
     },
     posterOverlay: {
         height: '100%',
@@ -39,17 +50,25 @@ const useStyles = makeStyles({
 
 export default function Movie(props) {
     const classes = useStyles();
+    const that = this;
+    const releaseYear = props.movie.releaseDate.split('-')[2];
 
-    return <div class='movie'>
-        <div className='movie-poster'>
+    const handleClick = (movie, event) => {
+        props.onClick(movie, event);
+    }
+
+    return <div>
+        <div className={classes.moviePoster}>
             <div className={classes.posterOverlay}>
-                <MoreVertIcon className={classes.moreIcon} fontSize='large' />
+                <IconButton className={classes.moreIcon} onClick={handleClick.bind(that, props.movie)} >
+                    <MoreVertIcon fontSize='large' />
+                </IconButton>
             </div>
             <img width='300' height='400' src={props.movie.poster} alt={props.movie.title}></img>
         </div>
-        <div className='movie-title-row'>
+        <div className={classes.movieTitleRow}>
             <div className={classes.movieTitle}>{props.movie.title}</div>
-            <div className={classes.releaseDate}>{props.movie.releaseDate}</div>
+            <div className={classes.releaseDate}>{releaseYear}</div>
         </div>
         {props.movie.genres.join(', ')}
     </div>;
@@ -59,7 +78,7 @@ Movie.propTypes = {
     movie: PropTypes.shape({
         title: PropTypes.string.isRequired,
         poster: PropTypes.string,
-        releaseDate: PropTypes.number.isRequired,
+        releaseDate: PropTypes.string.isRequired,
         genres: PropTypes.arrayOf(PropTypes.string),
     }),
 };
