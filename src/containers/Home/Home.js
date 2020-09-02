@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container } from '@material-ui/core';
-import store from '../../shared/store';
+import { connect } from 'react-redux';
+import { setOptions } from '../../redux/actions/action-creators';
+import { useComponentDidMount } from '../../shared/hooks';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import Header from '../../components/Header';
 import Search from '../../components/Search';
 import MoviesList from '../../components/MoviesList';
-import { useComponentDidMount } from '../../shared/effects';
 
-export default function Home() {
-    const [movies, setMovies] = useState([]);
-
+const Home = (props) => {
     useComponentDidMount(() => {
-        const unsubscribe = store.subscribe(() => {
-            setMovies(store.getState().movies || []);
-        });
-        
-        store.dispatch({ type: 'GET_MOVIES_LIST' });
-
-        return unsubscribe;
+        props.getMoviesList();
     });
 
     return <ErrorBoundary>
         <Header />
         <Container>
             <Search />
-            <MoviesList movies={movies} />
+            <MoviesList movies={props.movies} />
         </Container>
     </ErrorBoundary>;
 }
+
+const mapStateToProps = ({ moviesReducer }) => ({ movies: moviesReducer.movies, options: moviesReducer.options });
+const mapDispatchTpProps = (dispatch) => ({
+    getMoviesList: () => dispatch(setOptions({})),
+});
+
+export default connect(mapStateToProps, mapDispatchTpProps)(Home);

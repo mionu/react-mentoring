@@ -1,10 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
-import AddEditModal from '../AddEditModal';
-import store from '../../shared/store';
-import { useToggle } from '../../shared/effects';
+import { addMovie } from '../../redux/actions/action-creators';
+import { useToggle } from '../../shared/hooks';
+import AddEditMovieModal from '../AddEditMovieModal';
 
 const useStyles = makeStyles({
     header: {
@@ -15,18 +16,24 @@ const useStyles = makeStyles({
     }
 });
 
-export default function Header() {
+const Header = (props) => {
     const [open, toggleOpen] = useToggle();
     const classes = useStyles();
 
     const onSubmit = (movie) => {
-        store.dispatch({ type: 'ADD_MOVIE', data: movie });
+        props.addMovie(movie);
     }
 
     return <>
         <div className={classes.header}>
             <Button variant='contained' onClick={toggleOpen}><AddIcon />Add movie</Button>
         </div>
-        <AddEditModal open={open} onClose={toggleOpen} onSubmit={onSubmit} />
+        <AddEditMovieModal open={open} onClose={toggleOpen} onSubmit={onSubmit} />
     </>;
 }
+
+const mapDispatchToProps = (dispatch) => ({
+    addMovie: (movie) => dispatch(addMovie(movie)),
+});
+
+export default connect(null, mapDispatchToProps)(Header);
