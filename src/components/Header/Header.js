@@ -4,6 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 import AddEditModal from '../AddEditModal';
 import store from '../../shared/store';
+import { useToggle } from '../../shared/effects';
 
 const useStyles = makeStyles({
     header: {
@@ -15,16 +16,8 @@ const useStyles = makeStyles({
 });
 
 export default function Header() {
-    const [open, setOpen] = React.useState(false);
+    const [open, toggleOpen] = useToggle();
     const classes = useStyles();
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-    
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const onSubmit = (movie) => {
         store.dispatch({ type: 'ADD_MOVIE', data: movie });
@@ -32,8 +25,8 @@ export default function Header() {
 
     return <>
         <div className={classes.header}>
-            <Button variant='contained' onClick={handleOpen}><AddIcon />Add movie</Button>
+            <Button variant='contained' onClick={toggleOpen}><AddIcon />Add movie</Button>
         </div>
-        <AddEditModal open={open} onClose={handleClose} onSubmit={onSubmit} />
+        <AddEditModal open={open} onClose={toggleOpen} onSubmit={onSubmit} />
     </>;
 }

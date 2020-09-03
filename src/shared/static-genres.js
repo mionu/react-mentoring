@@ -1,1 +1,1 @@
-export default ['adventure', 'comedy', 'drama'];
+export default ['Adventure', 'Comedy', 'Drama'];

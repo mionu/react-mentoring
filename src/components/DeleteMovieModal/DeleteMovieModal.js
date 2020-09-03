@@ -4,8 +4,6 @@ import store from '../../shared/store';
 import BasicMovieModal from '../BasicMovieModal';
 
 export default function DeleteMovieModal(props) {
-    const that = this;
-
     function onSubmit() {
         store.dispatch({ type: 'DELETE_MOVIE', data: props.movieId });
         props.onClose();
@@ -22,5 +20,5 @@ export default function DeleteMovieModal(props) {
 DeleteMovieModal.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    movieId: PropTypes.string.isRequired,
+    movieId: PropTypes.string,
 }

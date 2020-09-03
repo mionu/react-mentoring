@@ -1,8 +1,10 @@
-import React from 'react';
-import { IconButton } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { IconButton, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import PropTypes from 'prop-types';
+import { extractReleaseYear } from '../../shared/utils';
 
 const useStyles = makeStyles({
     moreIcon: {
@@ -18,10 +20,6 @@ const useStyles = makeStyles({
     moviePoster: {
         position: 'relative',
         width: 300,
-    },
-    movieTitle: {
-        fontSize: 18,
-        fontWeight: 600,
     },
     movieTitleRow: {
         alignItems: 'baseline',
@@ -51,23 +49,24 @@ const useStyles = makeStyles({
 export default function Movie(props) {
     const classes = useStyles();
     const that = this;
-    const releaseYear = props.movie.releaseDate.split('-')[2];
+    const releaseYear = useMemo(() => extractReleaseYear(props.movie.releaseDate), [props.movie.releaseDate]);
 
     const handleClick = (movie, event) => {
         props.onClick(movie, event);
+        event.preventDefault();
     }
 
     return <div>
         <div className={classes.moviePoster}>
-            <div className={classes.posterOverlay}>
+            <Link to={`/movie/${props.movie.id}`} className={classes.posterOverlay}>
                 <IconButton className={classes.moreIcon} onClick={handleClick.bind(that, props.movie)} >
                     <MoreVertIcon fontSize='large' />
                 </IconButton>
-            </div>
+            </Link>
             <img width='300' height='400' src={props.movie.poster} alt={props.movie.title}></img>
         </div>
         <div className={classes.movieTitleRow}>
-            <div className={classes.movieTitle}>{props.movie.title}</div>
+            <Typography variant='h6'>{props.movie.title}</Typography>
             <div className={classes.releaseDate}>{releaseYear}</div>
         </div>
         {props.movie.genres.join(', ')}

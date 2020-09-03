@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './MoviesList.scss';
 import { Menu, MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import MoviesFilter from '../MoviesFilter';
 import MoviesSort from '../MoviesSort';
@@ -9,8 +9,25 @@ import AddEditModal from '../AddEditModal';
 import DeleteMovieModal from '../DeleteMovieModal';
 import store from '../../shared/store';
 
+const useStyles = makeStyles({
+    emptyMoviesList: {
+        marginLeft: 'auto',
+        marginTop: 50,
+        width: '60%',
+    },
+    flexSpaceBetween: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    moviesCounter: {
+        margin: 15,
+    },
+});
+
 export default function MoviesList(props) {
     const that = this;
+    const classes = useStyles();
     const [showEdit, setEditOpen] = useState(false);
     const [showDelete, setDeleteOpen] = useState(false);
     const [movie, setMovie] = useState(null);
@@ -36,13 +53,13 @@ export default function MoviesList(props) {
         store.dispatch({ type: 'EDIT_MOVIE', data: movie });
     }
 
-    const movies = !props.movies?.length ?
-    <div className='empty-movies-list'>
+    const movies = !props.movies.length ?
+    <div className={classes.emptyMoviesList}>
         <h1>No movies found</h1>
     </div> :
     <>
-    <div className='movies-counter'><strong>{props.movies.length}</strong> movies found</div>
-    <div className='movies'>{
+    <div className={classes.moviesCounter}><strong>{props.movies.length}</strong> movies found</div>
+    <div className={classes.flexSpaceBetween}>{
         props.movies.map(movie => {
             return <Movie key={movie.id} movie={movie} onClick={openMenu} />
         })
@@ -50,7 +67,7 @@ export default function MoviesList(props) {
     </>;
 
     return <>
-        <div className='movies-list-header'>
+        <div className={classes.flexSpaceBetween}>
             <MoviesFilter />
             <MoviesSort />
         </div>
@@ -68,8 +85,8 @@ export default function MoviesList(props) {
             open={Boolean(menuAnchor)}
             onClose={closeMenu.bind(that, null)}
         >
-            <MenuItem onClick={closeMenu.bind(that, 'edit')}>Edit movie</MenuItem>
-            <MenuItem onClick={closeMenu.bind(that, 'delete')}>Delete movie</MenuItem>
+            <MenuItem onClick={closeMenu.bind(that, 'edit')}>Edit</MenuItem>
+            <MenuItem onClick={closeMenu.bind(that, 'delete')}>Delete</MenuItem>
         </Menu>
     </>;
 }
@@ -77,3 +94,7 @@ export default function MoviesList(props) {
 MoviesList.propTypes = {
     movies: PropTypes.array.isRequired,
 };
+
+MoviesList.defaultProps = {
+    movies: [],
+}
