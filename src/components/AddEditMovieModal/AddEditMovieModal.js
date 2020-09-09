@@ -1,53 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useFormik } from 'formik';
 import PropTypes from 'prop-types';
-import { TextField, MenuItem, FormControl, InputLabel, Select } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import _ from 'lodash';
+import { GENRES, MOVIE_FIELDS } from '../../shared/constants';
+import { defaultProps, defaultState } from './constants';
+import { generateFormControlProps, validationSchema } from './form';
 import BasicMovieModal from '../BasicMovieModal';
-import { GENRES } from '../../shared/constants';
-
-const defaultState = {
-    title: '',
-    release_date: null,
-    poster_path: '',
-    genres: [],
-    overview: '',
-    runtime: 0,
-};
-
-const defaultProps = {
-    variant: 'outlined',
-    margin: 'dense',
-    type: 'text',
-    fullWidth: true,
-};
-
-const getUpdate = (control, event) => {
-    if (control === 'release_date') {
-        return { [control]: event.format('YYYY-MM-DD') };
-    }
-    
-    return { [control]: event.target.value };
-};
+import FormSelect from '../FormSelect';
 
 const getMovieProps = (movie, id) => {
     return {
         ...movie,
-        runtime: Number(movie.runtime),
-        tagline: movie.tagline || '',
-        ...(id ? { id } : {}),
+        [MOVIE_FIELDS.RUNTIME]: Number(movie[MOVIE_FIELDS.RUNTIME]),
+        [MOVIE_FIELDS.TAGLINE]: movie[MOVIE_FIELDS.TAGLINE] || movie[MOVIE_FIELDS.TITLE],
+        ...(id ? { [MOVIE_FIELDS.ID]: id } : {}),
     };
 }
 
 export default function AddEditMovieModal(props) {
-    const onSubmit = () => {
-        props.onSubmit(getMovieProps(movie, props.movie?.id));
+    const formik = useFormik({
+        initialValues: props.movie || defaultState,
+        validationSchema: validationSchema,
+        onSubmit: (values) => onSubmit(values),
+        enableReinitialize: true,
+    });
+
+    const onSubmit = (values) => {
+        props.onSubmit(getMovieProps(values, props.movie?.[MOVIE_FIELDS.ID]));
         onClose();
     }
 
     const onReset = () => {
-        setMovie(props.movie || defaultState);
+        formik.resetForm();
     }
 
     const onClose = () => {
@@ -55,90 +42,50 @@ export default function AddEditMovieModal(props) {
         props.onClose();
     }
 
-    const handleInput = (control, event) => {
-        setMovie({
-            ...movie,
-            ...getUpdate(control, event),
-        });
-    }
+    const controls = generateFormControlProps(formik);
 
-    const that = this;
-    const [movie, setMovie] = useState(props.movie || defaultState);
-    
-    useEffect(() => {
-        setMovie(props.movie || defaultState);
-    }, [props]);
-
-    return <MuiPickersUtilsProvider utils={MomentUtils}>
-        <BasicMovieModal
-            headerText={props.movie ? 'Edit movie' : 'Add movie'}
-            open={props.open}
-            onClose={props.onClose}
-            onSubmit={onSubmit}
-            onReset={onReset}
-        >
-            {props.movie ?
-            <TextField
-                {...defaultProps}
-                InputProps={{
-                    readOnly: true,
-                }}
-                label='ID'
-                value={props.movie.id}
-            />
-            : null}
-            <TextField
-                {...defaultProps}
-                autoFocus
-                label='Title'
-                value={movie?.title}
-                onChange={handleInput.bind(that, 'title')}
-            />
+    return (<BasicMovieModal
+        headerText={props.movie ? 'Edit movie' : 'Add movie'}
+        open={props.open}
+        valid={formik.isValid}
+        onClose={onClose}
+        onSubmit={formik.submitForm}
+        onReset={onReset}
+    >
+        {props.movie ?
+        <TextField
+            {...defaultProps}
+            {...controls[MOVIE_FIELDS.ID].props}
+            value={props.movie[MOVIE_FIELDS.ID]}
+        />
+        : null}
+        <TextField
+            {...defaultProps}
+            {...controls[MOVIE_FIELDS.TITLE].props}
+        />
+        <MuiPickersUtilsProvider utils={MomentUtils}>
             <DatePicker
                 {...defaultProps}
-                label='Release date'
-                inputVariant='outlined'
-                variant='inline'
-                format='YYYY-MM-DD'
-                value={movie?.release_date}
-                onChange={handleInput.bind(that, 'release_date')}
+                {...controls[MOVIE_FIELDS.RELEASEDATE].props}
             />
-            <TextField
-                {...defaultProps}
-                label='Movie url'
-                value={movie?.poster_path}
-                onChange={handleInput.bind(that, 'poster_path')}
-            />
-            <FormControl {...defaultProps}>
-                <InputLabel shrink id='genres-select'>Genre</InputLabel>
-                <Select
-                    labelId='genres-select'
-                    multiple
-                    displayEmpty
-                    value={movie?.genres}
-                    onChange={handleInput.bind(that, 'genres')}
-                >
-                    <MenuItem disabled value=''>Select genre</MenuItem>
-                    {GENRES.map((genre, i) =>
-                        <MenuItem key={i} value={genre}>{genre}</MenuItem>
-                    )}
-                </Select>
-            </FormControl>
-            <TextField
-                {...defaultProps}
-                label='Overview'
-                value={movie?.overview}
-                onChange={handleInput.bind(that, 'overview')}
-            />
-            <TextField
-                {...defaultProps}
-                label='Runtime'
-                type='number'
-                value={movie?.runtime}
-                onChange={handleInput.bind(that, 'runtime')}
-            />
-        </BasicMovieModal>
-    </MuiPickersUtilsProvider>;
+        </MuiPickersUtilsProvider>
+        <TextField
+            {...defaultProps}
+            {...controls[MOVIE_FIELDS.POSTER].props}
+        />
+        <FormSelect
+            {...controls[MOVIE_FIELDS.GENRES].props}
+            options={GENRES}
+        ></FormSelect>
+        <TextField
+            {...defaultProps}
+            {...controls[MOVIE_FIELDS.OVERVIEW].props}
+        />
+        <TextField
+            {...defaultProps}
+            {...controls[MOVIE_FIELDS.RUNTIME].props}
+        />
+    </BasicMovieModal>);
 }
 
 AddEditMovieModal.propTypes = {
@@ -146,12 +93,12 @@ AddEditMovieModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     movie: PropTypes.shape({
-        id: PropTypes.number,
-        title: PropTypes.string,
-        releaseDate: PropTypes.string,
-        url: PropTypes.string,
-        genre: PropTypes.number,
-        overview: PropTypes.string,
-        runtime: PropTypes.number,
+        [MOVIE_FIELDS.ID]: PropTypes.number,
+        [MOVIE_FIELDS.TITLE]: PropTypes.string,
+        [MOVIE_FIELDS.RELEASEDATE]: PropTypes.string,
+        [MOVIE_FIELDS.POSTER]: PropTypes.string,
+        [MOVIE_FIELDS.GENRES]: PropTypes.arrayOf(PropTypes.string),
+        [MOVIE_FIELDS.OVERVIEW]: PropTypes.string,
+        [MOVIE_FIELDS.RUNTIME]: PropTypes.number,
     }),
 }

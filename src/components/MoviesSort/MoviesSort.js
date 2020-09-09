@@ -3,19 +3,9 @@ import { connect } from 'react-redux';
 import { MenuItem, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { setOptions } from '../../redux/actions/action-creators';
+import { SORT_OPTIONS, MOVIE_FIELDS } from '../../shared/constants';
 
-const sortOptions = [{
-    value: 'genres',
-    text: 'genre',
-}, {
-    value: 'vote_average',
-    text: 'rating',
-}, {
-    value: 'release_date',
-    text: 'release date',
-}];
-
-const defaultSort = 'release_date';
+const defaultSort = MOVIE_FIELDS.RELEASEDATE;
 
 const useStyles = makeStyles({
     select: {
@@ -41,7 +31,7 @@ const MoviesSort = (props) => {
         value={sort}
         onChange={handleChange}
     >
-        {sortOptions.map((sort, i) => {
+        {SORT_OPTIONS.map((sort, i) => {
             return <MenuItem key={i} value={sort.value}>{sort.text.toUpperCase()}</MenuItem>
         })}
     </TextField>;
