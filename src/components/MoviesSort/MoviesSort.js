@@ -1,19 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { MenuItem, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { setOptions } from '../../redux/actions/action-creators';
 
 const sortOptions = [{
-    value: 'genre',
+    value: 'genres',
     text: 'genre',
 }, {
-    value: 'rating',
+    value: 'vote_average',
     text: 'rating',
 }, {
-    value: 'releaseDate',
+    value: 'release_date',
     text: 'release date',
 }];
 
-const defaultSort = 'releaseDate';
+const defaultSort = 'release_date';
 
 const useStyles = makeStyles({
     select: {
@@ -21,12 +23,13 @@ const useStyles = makeStyles({
     },
 });
 
-export default function MoviesSort() {
-    const [sort, setSort] = React.useState(defaultSort);
+const MoviesSort = (props) => {
+    const [sort, setSort] = React.useState(props.sortBy || defaultSort);
     const classes = useStyles();
 
     function handleChange(event) {
         setSort(event.target.value);
+        props.sort(event.target.value);
     }
 
     return <TextField
@@ -43,3 +46,11 @@ export default function MoviesSort() {
         })}
     </TextField>;
 }
+
+const mapStateToProps = ({ moviesReducer }) => ({ sortBy: moviesReducer.options.sortBy });
+
+const mapDispatchToProps = (dispatch) => ({
+    sort: (sortBy) => dispatch(setOptions({ sortBy })),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MoviesSort);

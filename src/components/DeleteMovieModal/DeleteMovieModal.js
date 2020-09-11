@@ -1,11 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import store from '../../shared/store';
+import { deleteMovie } from '../../redux/actions/action-creators';
 import BasicMovieModal from '../BasicMovieModal';
 
-export default function DeleteMovieModal(props) {
+const DeleteMovieModal = (props) => {
     function onSubmit() {
-        store.dispatch({ type: 'DELETE_MOVIE', data: props.movieId });
+        props.delete(props.movieId);
         props.onClose();
     }
 
@@ -20,5 +21,11 @@ export default function DeleteMovieModal(props) {
 DeleteMovieModal.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    movieId: PropTypes.string,
+    movieId: PropTypes.number,
 }
+
+const mapDispatchToProps = (dispatch) => ({
+    delete: (id) => dispatch(deleteMovie(id)),
+});
+
+export default connect(null, mapDispatchToProps)(DeleteMovieModal);

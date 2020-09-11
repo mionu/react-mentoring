@@ -4,16 +4,16 @@ import { TextField, MenuItem, FormControl, InputLabel, Select } from '@material-
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import _ from 'lodash';
-import staticGenres from '../../shared/static-genres';
 import BasicMovieModal from '../BasicMovieModal';
+import { GENRES } from '../../shared/constants';
 
 const defaultState = {
     title: '',
-    releaseDate: null,
-    url: '',
+    release_date: null,
+    poster_path: '',
     genres: [],
     overview: '',
-    runtime: '',
+    runtime: 0,
 };
 
 const defaultProps = {
@@ -23,12 +23,26 @@ const defaultProps = {
     fullWidth: true,
 };
 
-export default function AddEditModal(props) {
+const getUpdate = (control, event) => {
+    if (control === 'release_date') {
+        return { [control]: event.format('YYYY-MM-DD') };
+    }
+    
+    return { [control]: event.target.value };
+};
+
+const getMovieProps = (movie, id) => {
+    return {
+        ...movie,
+        runtime: Number(movie.runtime),
+        tagline: movie.tagline || '',
+        ...(id ? { id } : {}),
+    };
+}
+
+export default function AddEditMovieModal(props) {
     const onSubmit = () => {
-        props.onSubmit({
-            ...movie,
-            ...(props.movie?.id ? { id: props.movie.id } : {}),
-        });
+        props.onSubmit(getMovieProps(movie, props.movie?.id));
         onClose();
     }
 
@@ -44,12 +58,13 @@ export default function AddEditModal(props) {
     const handleInput = (control, event) => {
         setMovie({
             ...movie,
-            [control]: control === 'releaseDate' ? event.format('MM-DD-YYYY') : event.target.value,
+            ...getUpdate(control, event),
         });
     }
 
     const that = this;
     const [movie, setMovie] = useState(props.movie || defaultState);
+    
     useEffect(() => {
         setMovie(props.movie || defaultState);
     }, [props]);
@@ -84,15 +99,15 @@ export default function AddEditModal(props) {
                 label='Release date'
                 inputVariant='outlined'
                 variant='inline'
-                format='MM-DD-YYYY'
-                value={movie?.releaseDate}
-                onChange={handleInput.bind(that, 'releaseDate')}
+                format='YYYY-MM-DD'
+                value={movie?.release_date}
+                onChange={handleInput.bind(that, 'release_date')}
             />
             <TextField
                 {...defaultProps}
                 label='Movie url'
-                value={movie?.url}
-                onChange={handleInput.bind(that, 'url')}
+                value={movie?.poster_path}
+                onChange={handleInput.bind(that, 'poster_path')}
             />
             <FormControl {...defaultProps}>
                 <InputLabel shrink id='genres-select'>Genre</InputLabel>
@@ -100,21 +115,12 @@ export default function AddEditModal(props) {
                     labelId='genres-select'
                     multiple
                     displayEmpty
-                    renderValue={(selected) => {
-                        const filtered = selected.filter(s => staticGenres[s]);
-                        if (filtered.length === 0) {
-                                return 'Select genre';
-                            }
-                
-                        return filtered.map(s => staticGenres[s]).join(', ');
-                        }
-                    }
                     value={movie?.genres}
                     onChange={handleInput.bind(that, 'genres')}
                 >
                     <MenuItem disabled value=''>Select genre</MenuItem>
-                    {staticGenres.map((genre, i) =>
-                        <MenuItem key={i} value={i}>{genre}</MenuItem>
+                    {GENRES.map((genre, i) =>
+                        <MenuItem key={i} value={genre}>{genre}</MenuItem>
                     )}
                 </Select>
             </FormControl>
@@ -127,6 +133,7 @@ export default function AddEditModal(props) {
             <TextField
                 {...defaultProps}
                 label='Runtime'
+                type='number'
                 value={movie?.runtime}
                 onChange={handleInput.bind(that, 'runtime')}
             />
@@ -134,12 +141,12 @@ export default function AddEditModal(props) {
     </MuiPickersUtilsProvider>;
 }
 
-AddEditModal.propTypes = {
+AddEditMovieModal.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     movie: PropTypes.shape({
-        id: PropTypes.string,
+        id: PropTypes.number,
         title: PropTypes.string,
         releaseDate: PropTypes.string,
         url: PropTypes.string,

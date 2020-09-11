@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import store from '../../shared/store';
+import { getMovieById, setOptions } from '../../redux/actions/action-creators';
+import { useComponentDidMount } from '../../shared/hooks';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import MoviesList from '../../components/MoviesList';
 import MovieDetails from '../../components/MovieDetails';
-import { useComponentDidMount } from '../../shared/effects';
 
 const useStyles = makeStyles({
     searchIcon: {
@@ -17,32 +18,37 @@ const useStyles = makeStyles({
     },
 });
 
-function getMovieById(id) {
-    const { movies } = store.getState();
-
-    return movies.find(movie => movie.id === id);
-}
-
-export default function Movie() {
+const Movie = (props) => {
     const { id } = useParams();
-    const [movies, setMovies] = useState([]);
     const classes = useStyles();
 
     useComponentDidMount(() => {
-        const unsubscribe = store.subscribe(() => {
-            setMovies(store.getState().movies || []);
-        });
-        
-        store.dispatch({ type: 'GET_MOVIES_LIST' });
-
-        return unsubscribe;
+        props.getMoviesList();
     });
+
+    useEffect(() => {
+        props.getMovieById(id);
+        window.scrollTo(0, 0);
+    }, [id]);
 
     return <ErrorBoundary>
         <IconButton className={classes.searchIcon}><Link to='/'><SearchIcon fontSize='large'/></Link></IconButton>
         <Container>
-            <MovieDetails movie={getMovieById(id)} />
-            <MoviesList movies={movies} />
+            <MovieDetails movie={props.movie} />
+            <MoviesList movies={props.moviesList} />
         </Container>
     </ErrorBoundary>;
 }
+
+const mapStateToProps = ({ moviesReducer }) => ({
+    moviesList: moviesReducer.movies,
+    movie: moviesReducer.currentMovie,
+    options: moviesReducer.options,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    getMoviesList: () => dispatch(setOptions({})),
+    getMovieById: (id) => dispatch(getMovieById(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Movie);

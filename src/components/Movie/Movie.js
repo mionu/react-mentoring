@@ -5,6 +5,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { extractReleaseYear } from '../../shared/utils';
+import Image from '../Image/Image';
 
 const useStyles = makeStyles({
     moreIcon: {
@@ -16,6 +17,9 @@ const useStyles = makeStyles({
         padding: 7,
         position: 'absolute',
         top: 0,
+    },
+    movie: {
+        width: 300,
     },
     moviePoster: {
         position: 'relative',
@@ -49,21 +53,21 @@ const useStyles = makeStyles({
 export default function Movie(props) {
     const classes = useStyles();
     const that = this;
-    const releaseYear = useMemo(() => extractReleaseYear(props.movie.releaseDate), [props.movie.releaseDate]);
+    const releaseYear = useMemo(() => extractReleaseYear(props.movie.release_date), [props.movie.release_date]);
 
     const handleClick = (movie, event) => {
         props.onClick(movie, event);
         event.preventDefault();
     }
 
-    return <div>
+    return <div className={classes.movie}>
         <div className={classes.moviePoster}>
             <Link to={`/movie/${props.movie.id}`} className={classes.posterOverlay}>
                 <IconButton className={classes.moreIcon} onClick={handleClick.bind(that, props.movie)} >
                     <MoreVertIcon fontSize='large' />
                 </IconButton>
             </Link>
-            <img width='300' height='400' src={props.movie.poster} alt={props.movie.title}></img>
+            <Image src={props.movie.poster_path} alt={props.movie.title} />
         </div>
         <div className={classes.movieTitleRow}>
             <Typography variant='h6'>{props.movie.title}</Typography>
@@ -76,8 +80,8 @@ export default function Movie(props) {
 Movie.propTypes = {
     movie: PropTypes.shape({
         title: PropTypes.string.isRequired,
-        poster: PropTypes.string,
-        releaseDate: PropTypes.string.isRequired,
+        poster_path: PropTypes.string,
+        release_date: PropTypes.string.isRequired,
         genres: PropTypes.arrayOf(PropTypes.string),
     }),
 };
