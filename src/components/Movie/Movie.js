@@ -23,7 +23,7 @@ export default function Movie(props) {
 
     return <div className={classes.movie}>
         <div className={classes.moviePoster}>
-            <Link to={`/movie/${props.movie[MOVIE_FIELDS.ID]}`} className={classes.posterOverlay}>
+            <Link to={`/film/${props.movie[MOVIE_FIELDS.ID]}`} className={classes.posterOverlay}>
                 <IconButton className={classes.moreIcon} onClick={handleClick.bind(that, props.movie)} >
                     <MoreVertIcon fontSize='large' />
                 </IconButton>

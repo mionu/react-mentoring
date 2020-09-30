@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem, CircularProgress } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import useStyles from './styles';
 import { editMovie, loadMore } from '../../redux/actions/action-creators';
 import { isScrolledToTheBottom } from '../../shared/utils';
-import { MOVIE_FIELDS } from '../../shared/constants';
+import { LOADING, MOVIE_FIELDS } from '../../shared/constants';
 import MoviesFilter from '../MoviesFilter';
 import MoviesSort from '../MoviesSort';
 import Movie from '../Movie';
@@ -21,7 +21,7 @@ const MoviesList = (props) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
 
     const checkScrollAndLoadMore = () => {
-        if (isScrolledToTheBottom()) {
+        if (isScrolledToTheBottom() && !props.loading) {
             props.loadMore();
         }
     }
@@ -73,6 +73,7 @@ const MoviesList = (props) => {
             <MoviesSort />
         </div>
         {movies}
+        {props.loading ? <CircularProgress size='3rem' className={classes.loading} /> : null}
         <AddEditMovieModal
             open={showEdit}
             movie={movie}
@@ -100,8 +101,9 @@ MoviesList.defaultProps = {
     movies: [],
 };
 
-const mapStateToProps = ({ moviesReducer }) => ({
-    resultsCount: moviesReducer.options.totalAmount,
+const mapStateToProps = ({ movies, shared }) => ({
+    resultsCount: movies.options.totalAmount,
+    loading: shared.loading[LOADING.MOVIES_LIST],
 });
 
 const mapDispatchToProps = (dispatch) => ({

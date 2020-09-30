@@ -22,6 +22,8 @@ const DELETE_MOVIE = '[Movie] Delete movie';
 const DELETE_MOVIE_SUCCESS = '[Movie] Delete movie success';
 const DELETE_MOVIE_FAILURE = '[Movie] Delete movie failure';
 
+const SET_LOADING = '[Shared] Set loading';
+
 export default {
     GET_MOVIES_LIST,
     GET_MOVIES_LIST_SUCCESS,
@@ -40,4 +42,5 @@ export default {
     DELETE_MOVIE,
     DELETE_MOVIE_SUCCESS,
     DELETE_MOVIE_FAILURE,
+    SET_LOADING,
 };

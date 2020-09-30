@@ -30,6 +30,7 @@ export default makeStyles({
         opacity: 0,
         position: 'absolute',
         width: '100%',
+        zIndex: 1,
 
         '&:hover': {
             opacity: 1,

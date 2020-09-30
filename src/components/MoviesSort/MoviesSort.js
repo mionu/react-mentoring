@@ -37,7 +37,7 @@ const MoviesSort = (props) => {
     </TextField>;
 }
 
-const mapStateToProps = ({ moviesReducer }) => ({ sortBy: moviesReducer.options.sortBy });
+const mapStateToProps = ({ movies }) => ({ sortBy: movies.options.sortBy });
 
 const mapDispatchToProps = (dispatch) => ({
     sort: (sortBy) => dispatch(setOptions({ sortBy })),

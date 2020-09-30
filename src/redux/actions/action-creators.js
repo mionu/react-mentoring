@@ -1,4 +1,5 @@
 import ActionTypes from './action-types';
+import { LOADING } from '../../shared/constants';
 
 const getMoviesList = (params) => ({ type: ActionTypes.GET_MOVIES_LIST, payload: params });
 const getMoviesListSuccess = (payload) => ({ type: ActionTypes.GET_MOVIES_LIST_SUCCESS, payload });
@@ -23,6 +24,10 @@ const deleteMovie = (id) => ({ type: ActionTypes.DELETE_MOVIE, payload: id });
 const deleteMovieSuccess = (id) => ({ type: ActionTypes.DELETE_MOVIE_SUCCESS, payload: id });
 const deleteMovieFailure = (error) => ({ type: ActionTypes.DELETE_MOVIE_FAILURE, payload: error });
 
+const setLoading = (type, state) => ({ type: ActionTypes.SET_LOADING, payload: { type, state } });
+const setGlobalLoading = (state) => ({ type: ActionTypes.SET_LOADING, payload: { type: LOADING.GLOBAL, state } });
+const setMoviesListLoading = (state) => ({ type: ActionTypes.SET_LOADING, payload: { type: LOADING.MOVIES_LIST, state } });
+
 export {
     getMoviesList,
     getMoviesListSuccess,
@@ -41,4 +46,7 @@ export {
     deleteMovie,
     deleteMovieSuccess,
     deleteMovieFailure,
+    setLoading,
+    setGlobalLoading,
+    setMoviesListLoading,
 };

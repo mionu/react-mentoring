@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { setOptions } from '../../redux/actions/action-creators';
 
 const useStyles = makeStyles({
     search: {
@@ -17,7 +17,8 @@ const useStyles = makeStyles({
 
 const Search = (props) => {
     const classes = useStyles();
-    const [searchTerm, setSearchTerm] = useState(props.searchTerm || '');
+    const defaultSearchTerm = props.searchTerm || '';
+    const [searchTerm, setSearchTerm] = useState(defaultSearchTerm);
 
     const handleInput = ({ target }) => {
         setSearchTerm(target.value);
@@ -30,8 +31,12 @@ const Search = (props) => {
     }
     
     const runSearch = () => {
-        props.search(searchTerm);
+        props.history.push(!searchTerm ? '/' : `/search/${searchTerm}`);
     };
+
+    useEffect(() => {
+        setSearchTerm(defaultSearchTerm);
+    }, [props.searchTerm]);
 
     return <>
         <h1>FIND YOUR MOVIE</h1>
@@ -50,10 +55,6 @@ const Search = (props) => {
     </>;
 }
 
-const mapStateToProps = ({ moviesReducer }) => ({ searchTerm: moviesReducer.options.search });
+const mapStateToProps = ({ movies }) => ({ searchTerm: movies.options.search });
 
-const mapDispatchToProps = (dispatch) => ({
-    search: (search) => dispatch(setOptions({ search })),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default withRouter(connect(mapStateToProps)(Search));

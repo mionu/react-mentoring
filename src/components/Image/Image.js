@@ -1,19 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core';
 import NoImage from '../../../assets/no-image.png';
 
-export default function Image(props) {
-    const setFallbackImage = ({ target }) => {
-        target.src = NoImage;
-    }
+const useStyles = makeStyles({
+    notVisible: {
+        opacity: 0,
+        position: 'absolute',
+    },
+    visible: {
+        opacity: 1,
+        position: 'relative',
+    },
+});
 
-    return <img
-        width={props.width}
-        height={props.height}
-        alt={props.alt}
-        src={props.src}
-        onError={setFallbackImage}
-    ></img>
+export default function Image(props) {
+    const [loaded, setLoaded] = useState(false);
+    const classes = useStyles();
+
+    return <>
+        <img
+            className={loaded ? classes.visible : classes.notVisible}
+            width={props.width}
+            height={props.height}
+            alt={props.alt}
+            src={props.src}
+            onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(false)}
+        ></img>
+        <img
+            className={loaded ? classes.notVisible : classes.visible}
+            width={props.width}
+            height={props.height}
+            alt={props.alt}
+            src={NoImage}
+        ></img>
+    </>;
 }
 
 Image.propTypes = {

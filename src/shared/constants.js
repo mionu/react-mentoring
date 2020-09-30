@@ -40,6 +40,11 @@ const MOVIE_FIELDS = {
     RUNTIME: 'runtime',
 };
 
+const LOADING = {
+    GLOBAL: 'global',
+    MOVIES_LIST: 'moviesList',
+};
+
 const SORT_OPTIONS = [{
     value: MOVIE_FIELDS.GENRES,
     text: 'genre',
@@ -60,6 +65,7 @@ export {
     GENRE_FILTER_VALUES,
     GENRES,
     MOVIE_FIELDS,
+    LOADING,
     SORT_OPTIONS,
     SORT_ORDER,
 };
