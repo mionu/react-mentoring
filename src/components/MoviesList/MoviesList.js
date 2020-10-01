@@ -1,38 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Menu, MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import useStyles from './styles';
 import { editMovie, loadMore } from '../../redux/actions/action-creators';
 import { isScrolledToTheBottom } from '../../shared/utils';
+import { MOVIE_FIELDS } from '../../shared/constants';
 import MoviesFilter from '../MoviesFilter';
 import MoviesSort from '../MoviesSort';
 import Movie from '../Movie';
 import AddEditMovieModal from '../AddEditMovieModal';
 import DeleteMovieModal from '../DeleteMovieModal';
-
-const useStyles = makeStyles({
-    emptyMoviesList: {
-        marginLeft: 'auto',
-        marginTop: 50,
-        width: '60%',
-    },
-    flexSpaceBetween: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        marginTop: 20,
-    },
-    moviesCounter: {
-        margin: 15,
-    },
-    moviesList: {
-        display: 'grid',
-        gap: '10px',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        marginTop: 15,
-    },
-});
 
 const MoviesList = (props) => {
     const that = this;
@@ -84,7 +62,7 @@ const MoviesList = (props) => {
         <div className={classes.moviesCounter}><strong>{props.resultsCount}</strong> movies found</div>
         <div className={classes.moviesList}>{
             props.movies.map(movie => {
-                return <Movie key={movie.id} movie={movie} onClick={openMenu} />
+                return <Movie key={movie[MOVIE_FIELDS.ID]} movie={movie} onClick={openMenu} />
             })
         }</div>
         </>;

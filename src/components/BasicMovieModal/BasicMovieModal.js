@@ -28,16 +28,21 @@ export default function BasicMovieModal(props) {
             {props.onReset
                 ? <Button onClick={props.onReset}>Reset</Button>
                 : <Button onClick={props.onClose}>Cancel</Button>}
-            <Button onClick={props.onSubmit} color='primary'>Submit</Button>
+            <Button disabled={!props.valid} onClick={props.onSubmit} color='primary'>Submit</Button>
         </DialogActions>
     </Dialog>;
 }
 
 BasicMovieModal.propTypes = {
     open: PropTypes.bool.isRequired,
+    valid: PropTypes.bool,
     headerText: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onReset: PropTypes.func,
 }
+
+BasicMovieModal.defaultProps = {
+    valid: true,
+};

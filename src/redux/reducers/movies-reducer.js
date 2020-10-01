@@ -1,6 +1,6 @@
 import ActionTypes from '../actions/action-types';
 import _ from 'lodash';
-import { SORT_ORDER, SEARCH_BY } from '../../shared/constants';
+import { SORT_ORDER, MOVIE_FIELDS } from '../../shared/constants';
 
 export const initialState = {
     currentMovie: {},
@@ -10,8 +10,8 @@ export const initialState = {
         limit: 12,
         offset: 0,
         search: null,
-        searchBy: SEARCH_BY.TITLE,
-        sortBy: 'release_date',
+        searchBy: MOVIE_FIELDS.TITLE,
+        sortBy: MOVIE_FIELDS.RELEASEDATE,
         sortOrder: SORT_ORDER.ASC,
         totalAmount: 0,
     },

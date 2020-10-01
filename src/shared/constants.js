@@ -28,10 +28,28 @@ const GENRES = [
     'Western',
 ];
 
-const SEARCH_BY = {
-    GENRES: 'genres',
+const MOVIE_FIELDS = {
+    ID: 'id',
     TITLE: 'title',
+    TAGLINE: 'tagline',
+    RATING: 'vote_average',
+    RELEASEDATE: 'release_date',
+    POSTER: 'poster_path',
+    GENRES: 'genres',
+    OVERVIEW: 'overview',
+    RUNTIME: 'runtime',
 };
+
+const SORT_OPTIONS = [{
+    value: MOVIE_FIELDS.GENRES,
+    text: 'genre',
+}, {
+    value: MOVIE_FIELDS.RATING,
+    text: 'rating',
+}, {
+    value: MOVIE_FIELDS.RELEASEDATE,
+    text: 'release date',
+}];;
 
 const SORT_ORDER = {
     ASC: 'asc',
@@ -41,6 +59,7 @@ const SORT_ORDER = {
 export {
     GENRE_FILTER_VALUES,
     GENRES,
-    SEARCH_BY,
+    MOVIE_FIELDS,
+    SORT_OPTIONS,
     SORT_ORDER,
 };

@@ -23,4 +23,4 @@ export const getParamsFromObject = (params) => {
 };
 
 export const isScrolledToTheBottom = () =>
-    window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight;
+    document.documentElement.offsetHeight - (window.innerHeight + document.documentElement.scrollTop) < 100;
