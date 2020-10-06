@@ -1,7 +1,7 @@
 import ActionTypes from '../actions/action-types';
 import { LOADING } from '../../shared/constants';
 
-const initialState = {
+export const initialState = {
     loading: {
         [LOADING.GLOBAL]: false,
         [LOADING.MOVIES_LIST]: false,

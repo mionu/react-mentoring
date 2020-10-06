@@ -1,8 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
-
-export const useComponentDidMount = (callback) => {
-    useEffect(() => { callback(); }, []);
-};
+import { useState, useCallback } from 'react';
 
 export const useToggle = (initialValue = false) => {
     const [flag, setFlag] = useState(initialValue);

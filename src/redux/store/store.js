@@ -1,10 +1,12 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { createEpicMiddleware } from 'redux-observable';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createEpicMiddleware, combineEpics } from 'redux-observable';
+import { ajax } from 'rxjs/ajax';
 import reducers from '../reducers';
 import rootEpic from '../epics';
 
-const epicMiddleware = createEpicMiddleware();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const epicMiddleware = createEpicMiddleware({
+    dependencies: { ajax },
+});
 
 const rootReducer = combineReducers({
     movies: reducers.moviesReducer,
@@ -13,7 +15,7 @@ const rootReducer = combineReducers({
 
 const store = createStore(
     rootReducer,
-    composeEnhancers(applyMiddleware(epicMiddleware)),
+    applyMiddleware(epicMiddleware),
 );
 
 epicMiddleware.run(rootEpic);

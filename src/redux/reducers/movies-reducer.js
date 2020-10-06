@@ -1,6 +1,7 @@
 import ActionTypes from '../actions/action-types';
 import _ from 'lodash';
 import { SORT_ORDER, MOVIE_FIELDS } from '../../shared/constants';
+import * as utils from './reducers-utils';
 
 export const initialState = {
     currentMovie: {},
@@ -22,13 +23,13 @@ export function moviesReducer(state = initialState, action) {
         case ActionTypes.GET_MOVIES_LIST_SUCCESS:
             return {
                 ...state,
-                list: getMoviesListUpdate(state.list, action.payload),
+                list: utils.getMoviesListUpdate(state.list, action.payload),
                 options: _.assign({}, state.options, action.payload.options),
             };
         case ActionTypes.SET_OPTIONS:
             return {
                 ...state,
-                options: getOptionsUpdate(state.options, action.payload),
+                options: utils.getOptionsUpdate(state.options, action.payload),
             };
         case ActionTypes.GET_MOVIE_BY_ID_SUCCESS:
             return {
@@ -43,7 +44,7 @@ export function moviesReducer(state = initialState, action) {
         case ActionTypes.EDIT_MOVIE_SUCCESS:
             return {
                 ...state,
-                list: getMoviesWithUpdate(state.list, action.payload),
+                list: utils.getMoviesWithUpdate(state.list, action.payload),
             };
         case ActionTypes.DELETE_MOVIE_SUCCESS:
             return {
@@ -55,24 +56,3 @@ export function moviesReducer(state = initialState, action) {
             return state;
     }
 }
-
-const getMoviesListUpdate = (oldMovies, { movies, shouldReplace = true }) => {
-    return shouldReplace ? movies : _.concat(oldMovies, movies);
-};
-
-const getOptionsUpdate = (oldOptions, newOptions) => {
-    const updated = _.assign(oldOptions, newOptions, {
-        offset: newOptions.offset || 0,
-    });
-
-    return _.omit(updated, ['shouldReplace']);
-};
-
-const getMoviesWithUpdate = (movies, updatedMovie) => {
-    const updated = [...movies];
-    const index = movies.findIndex(m => m.id === updatedMovie.id);
-
-    updated[index] = updatedMovie;
-    
-    return updated;
-};

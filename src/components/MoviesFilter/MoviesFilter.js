@@ -36,7 +36,7 @@ const MoviesFilter = (props) => {
     </Tabs>;
 }
 
-const mapStateToProps = ({ movies }) => ({ filter: movies.options.filter[0] });
+const mapStateToProps = ({ movies }) => ({ filter: movies.options.filter?.[0] });
 
 const mapDispatchToProps = (dispatch) => ({
     dispatchFilter: (filter) => dispatch(setOptions({ filter })),
