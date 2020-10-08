@@ -7,8 +7,9 @@ module.exports = {
     context: path.join(__dirname, 'src'),
     entry: './index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: '/'
     },
     resolve: {
         modules: [path.resolve(__dirname, './src'), 'node_modules'],
@@ -44,6 +45,7 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
+        historyApiFallback: true,
         port: 3000,
     },
     optimization: {

@@ -4,7 +4,7 @@ import { SORT_ORDER, MOVIE_FIELDS } from '../../shared/constants';
 
 export const initialState = {
     currentMovie: {},
-    movies: [],
+    list: [],
     options: {
         filter: [],
         limit: 12,
@@ -22,7 +22,7 @@ export function moviesReducer(state = initialState, action) {
         case ActionTypes.GET_MOVIES_LIST_SUCCESS:
             return {
                 ...state,
-                movies: getMoviesListUpdate(state.movies, action.payload),
+                list: getMoviesListUpdate(state.list, action.payload),
                 options: _.assign({}, state.options, action.payload.options),
             };
         case ActionTypes.SET_OPTIONS:
@@ -38,17 +38,17 @@ export function moviesReducer(state = initialState, action) {
         case ActionTypes.ADD_MOVIE_SUCCESS:
             return {
                 ...state,
-                movies: [action.payload, ...state.movies.slice(0, -1)],
+                list: [action.payload, ...state.list.slice(0, -1)],
             };
         case ActionTypes.EDIT_MOVIE_SUCCESS:
             return {
                 ...state,
-                movies: getMoviesWithUpdate(state.movies, action.payload),
+                list: getMoviesWithUpdate(state.list, action.payload),
             };
         case ActionTypes.DELETE_MOVIE_SUCCESS:
             return {
                 ...state,
-                movies: state.movies.filter(m => m.id !== action.payload),
+                list: state.list.filter(m => m.id !== action.payload),
                 options: _.assign({}, state.options, { totalAmount: state.options.totalAmount - 1 }),
             };
         default:

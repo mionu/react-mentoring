@@ -12,6 +12,11 @@ export default makeStyles({
         justifyContent: 'space-between',
         marginTop: 20,
     },
+    loading: {
+        left: '50%',
+        margin: '30px 0',
+        position: 'relative',
+    },
     moviesCounter: {
         margin: 15,
     },
@@ -19,6 +24,6 @@ export default makeStyles({
         display: 'grid',
         gap: '10px',
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        marginTop: 15,
+        margin: '15px 0',
     },
 });
