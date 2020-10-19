@@ -6,10 +6,8 @@
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --env.NODE_ENV=development --config webpack.config.js",
     "build": "./node_modules/.bin/webpack --env.NODE_ENV=production --config webpack.config.js",
-    "test": "jest"
-  },
-  "jest": {
-    "verbose": true
+    "test": "jest --config jest.config.js",
+    "test:watch": "jest --config jest.config.js --watch"
   },
   "repository": {
     "type": "git",
@@ -45,12 +43,17 @@
     "@babel/plugin-proposal-class-properties": "7.10.4",
     "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.10.4",
+    "@testing-library/react": "11.0.4",
     "babel-loader": "8.1.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
     "css-loader": "4.2.0",
     "file-loader": "6.1.0",
     "html-webpack-plugin": "4.3.0",
+    "identity-obj-proxy": "3.0.0",
     "jest": "26.2.2",
     "mini-css-extract-plugin": "0.9.0",
+    "react-test-renderer": "16.13.1",
+    "redux-mock-store": "1.5.4",
     "sass": "1.26.10",
     "sass-loader": "9.0.2",
     "terser-webpack-plugin": "3.1.0",
