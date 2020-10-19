@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { createEpicMiddleware, combineEpics } from 'redux-observable';
+import { createEpicMiddleware } from 'redux-observable';
 import { ajax } from 'rxjs/ajax';
 import reducers from '../reducers';
 import rootEpic from '../epics';

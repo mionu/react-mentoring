@@ -1,4 +1,5 @@
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subject } from 'rxjs';
+import { ActionsObservable } from 'redux-observable';
 import {
     getMoviesListEpic,
     setOptionsEpic,
@@ -27,7 +28,9 @@ import {
     deleteMovie,
     deleteMovieSuccess,
     deleteMovieFailure,
+    setGlobalLoading,
 } from '../actions/action-creators';
+import { take, toArray } from 'rxjs/operators';
 
 const dependencies = {
     ajax: {
@@ -39,52 +42,58 @@ const postReqDependencies = {
     ajax: jest.fn(() => of({})),
 };
 
+function testEpic(epic, deps, count, action, callback, state = {}) {
+    const actions = new Subject();
+    const actions$ = new ActionsObservable(actions);
+    const store = { getState: () => state };
+    
+    epic(actions$, store, deps).pipe(
+        take(count),
+        toArray(),
+    ).subscribe(callback);
+
+    if (action.length) {
+        action.map(act => actions.next(act))
+    } else {
+        actions.next(action);
+    }
+}
+
 describe('moviesEpics', () => {
     describe('getMoviesListEpic', () => {
         it('should call getMovies endpoint', (done) => {
-            const dispatch = jest.fn();
-            const action$ = of(getMoviesList({ search: 'a' }));
             const mockMovies = [{
                id: 1, title: 'a', 
             }];
-            const expectedAction = getMoviesListSuccess({ movies: mockMovies, options: {} });
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), getMoviesListSuccess({ movies: mockMovies, options: {} })];
             dependencies.ajax.getJSON.mockReturnValueOnce(of({ data: mockMovies }));
 
-            const epic$ = getMoviesListEpic(action$, { dispatch }, dependencies);
-
-            epic$.subscribe(action => {
+            testEpic(getMoviesListEpic, dependencies, 3, getMoviesList({ search: 'a', loading: 'global' }), (actions) => {
                 expect(dependencies.ajax.getJSON).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
 
         it('should not call any endpoints if no search term provided', (done) => {
-            const dispatch = jest.fn();
-            const action$ = of(getMoviesList());
-            const expectedAction = getMoviesListSuccess({ movies: [], options: initialState.options });
+            const expectedActions = [getMoviesListSuccess({ movies: [], options: initialState.options })];
 
-            const epic$ = getMoviesListEpic(action$, { dispatch }, dependencies);
-
-            epic$.subscribe(action => {
+            testEpic(getMoviesListEpic, dependencies, 1, getMoviesList(), (actions) => {
                 expect(dependencies.ajax.getJSON).not.toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
 
         it('should return error', (done) => {
-            const dispatch = jest.fn();
             const action$ = of(getMoviesList({ search: 'a' }));
             const error = { error: 'unknown' };
-            const expectedAction = getMoviesListFailure(error);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), getMoviesListFailure(error)];
             dependencies.ajax.getJSON.mockReturnValueOnce(throwError(error));
 
-            const epic$ = getMoviesListEpic(action$, { dispatch }, dependencies);
-
-            epic$.subscribe(action => {
+            testEpic(getMoviesListEpic, dependencies, 3, getMoviesList({ search: 'a', loading: 'global' }), (actions) => {
                 expect(dependencies.ajax.getJSON).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
@@ -185,35 +194,27 @@ describe('moviesEpics', () => {
 
     describe('addMovieEpic', () => {
         it('should add movie', (done) => {
-            const dispatch = jest.fn();
             const newMovie = { title: 'movie' };
             const addedMovie = { id: 1, title: 'movie' };
-            const action$ = of(addMovie(newMovie));
-            const expectedAction = addMovieSuccess(addedMovie);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), addMovieSuccess(addedMovie)];
             postReqDependencies.ajax.mockReturnValueOnce(of({ response: addedMovie}));
 
-            const epic$ = addMovieEpic(action$, { dispatch }, postReqDependencies);
-
-            epic$.subscribe(action => {
+            testEpic(addMovieEpic, postReqDependencies, 3, addMovie(newMovie), (actions) => {
                 expect(postReqDependencies.ajax).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
 
         it('should return error', (done) => {
-            const dispatch = jest.fn();
             const newMovie = { title: 'movie' };
-            const action$ = of(addMovie(newMovie));
             const error = { error: 'unknown' };
-            const expectedAction = addMovieFailure(error);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), addMovieFailure(error)];
             postReqDependencies.ajax.mockReturnValueOnce(throwError(error));
 
-            const epic$ = addMovieEpic(action$, { dispatch }, postReqDependencies);
-
-            epic$.subscribe(action => {
+            testEpic(addMovieEpic, postReqDependencies, 3, addMovie(newMovie), (actions) => {
                 expect(postReqDependencies.ajax).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
@@ -221,34 +222,26 @@ describe('moviesEpics', () => {
 
     describe('editMovieEpic', () => {
         it('should edit movie', (done) => {
-            const dispatch = jest.fn();
             const movie = { id: 1, title: 'movie' };
-            const action$ = of(editMovie(movie));
-            const expectedAction = editMovieSuccess(movie);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), editMovieSuccess(movie)];
             postReqDependencies.ajax.mockReturnValueOnce(of({ response: movie}));
 
-            const epic$ = editMovieEpic(action$, { dispatch }, postReqDependencies);
-
-            epic$.subscribe(action => {
+            testEpic(editMovieEpic, postReqDependencies, 3, editMovie(movie), (actions) => {
                 expect(postReqDependencies.ajax).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
 
         it('should return error', (done) => {
-            const dispatch = jest.fn();
             const movie = { id: 1, title: 'movie' };
-            const action$ = of(editMovie(movie));
             const error = { error: 'unknown' };
-            const expectedAction = editMovieFailure(error);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), editMovieFailure(error)];
             postReqDependencies.ajax.mockReturnValueOnce(throwError(error));
 
-            const epic$ = editMovieEpic(action$, { dispatch }, postReqDependencies);
-
-            epic$.subscribe(action => {
+            testEpic(editMovieEpic, postReqDependencies, 3, editMovie(movie), (actions) => {
                 expect(postReqDependencies.ajax).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
@@ -256,31 +249,23 @@ describe('moviesEpics', () => {
 
     describe('deleteMovieEpic', () => {
         it('should delete movie', (done) => {
-            const dispatch = jest.fn();
-            const action$ = of(deleteMovie(1));
-            const expectedAction = deleteMovieSuccess(1);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), deleteMovieSuccess(1)];
 
-            const epic$ = deleteMovieEpic(action$, { dispatch }, postReqDependencies);
-
-            epic$.subscribe(action => {
+            testEpic(deleteMovieEpic, postReqDependencies, 3, deleteMovie(1), (actions) => {
                 expect(postReqDependencies.ajax).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });
 
         it('should return error', (done) => {
-            const dispatch = jest.fn();
-            const action$ = of(deleteMovie(1));
             const error = { error: 'unknown' };
-            const expectedAction = deleteMovieFailure(error);
+            const expectedActions = [setGlobalLoading(true), setGlobalLoading(false), deleteMovieFailure(error)];
             postReqDependencies.ajax.mockReturnValueOnce(throwError(error));
 
-            const epic$ = deleteMovieEpic(action$, { dispatch }, postReqDependencies);
-
-            epic$.subscribe(action => {
+            testEpic(deleteMovieEpic, postReqDependencies, 3, deleteMovie(1), (actions) => {
                 expect(postReqDependencies.ajax).toHaveBeenCalled();
-                expect(action).toEqual(expectedAction);
+                expect(actions).toEqual(expectedActions);
                 done();
             });
         });

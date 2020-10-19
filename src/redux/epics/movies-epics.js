@@ -1,7 +1,7 @@
-import { of } from 'rxjs';
-import { mergeMap, map, tap, withLatestFrom, throttleTime, distinct, finalize, catchError } from 'rxjs/operators';
+import { concat, of } from 'rxjs';
+import { mergeMap, map, withLatestFrom, throttleTime, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import _ from 'lodash';
+import { omit, assign } from 'lodash';
 import { baseUrl } from '../../env';
 import ActionTypes from '../actions/action-types';
 import {
@@ -24,22 +24,25 @@ import { initialState } from '../reducers/movies-reducer';
 import { getParamsFromObject } from '../../shared/utils';
 import { LOADING } from '../../shared/constants';
 
-const getMoviesListEpic = (actions$, { dispatch }, { ajax }) => actions$.pipe(
+const getMoviesListEpic = (actions$, _, { ajax }) => actions$.pipe(
     ofType(ActionTypes.GET_MOVIES_LIST),
     mergeMap(({ payload = initialState.options }) => {
         if (!payload.search) {
             return of(getMoviesListSuccess({ movies: [], options: payload }));
         }
 
-        const params = getParamsFromObject(_.omit(payload, ['totalAmount', 'shouldReplace', 'loading']));
+        const params = getParamsFromObject(omit(payload, ['totalAmount', 'shouldReplace', 'loading']));
         const requestUrl = `${baseUrl}/movies?${params}`;
-
-        dispatch(setLoading(payload.loading, true));
         
-        return ajax.getJSON(requestUrl).pipe(
-            map(({ data, ...options }) => getMoviesListSuccess({ movies: data, options, shouldReplace: payload.shouldReplace})),
-            catchError((e) =>  of(getMoviesListFailure(e))),
-            finalize(() => dispatch(setLoading(payload.loading, false))),
+        return concat(
+            of(setLoading(payload.loading, true)),
+            ajax.getJSON(requestUrl).pipe(
+                mergeMap(({ data, ...options }) => of(
+                    setLoading(payload.loading, false),
+                    getMoviesListSuccess({ movies: data, options, shouldReplace: payload.shouldReplace})),
+                ),
+                catchError((e) => of(setLoading(payload.loading, false), getMoviesListFailure(e))),
+            ),
         );
     }),
 );
@@ -48,7 +51,7 @@ const setOptionsEpic = (actions$, state$) => actions$.pipe(
     ofType(ActionTypes.SET_OPTIONS),
     withLatestFrom(state$),
     mergeMap(([{ payload }, { movies }]) => {
-        const options = _.assign({}, movies.options, payload, {
+        const options = assign({}, movies.options, payload, {
             loading: payload.loading || LOADING.GLOBAL,
         });
 
@@ -59,7 +62,6 @@ const setOptionsEpic = (actions$, state$) => actions$.pipe(
 const loadMoreEpic = (actions$, state$) => actions$.pipe(
     ofType(ActionTypes.LOAD_MORE),
     throttleTime(200),
-    distinct(),
     withLatestFrom(state$),
     mergeMap(([, { movies }]) => {
         const { options } = movies;
@@ -88,51 +90,48 @@ const getMovieByIdEpic = (actions$, _, { ajax }) => actions$.pipe(
     }),
 );
 
-const addMovieEpic = (actions$, { dispatch }, { ajax }) => actions$.pipe(
+const addMovieEpic = (actions$, _, { ajax }) => actions$.pipe(
     ofType(ActionTypes.ADD_MOVIE),
-    tap(() => dispatch(setGlobalLoading(true))),
-    mergeMap(({ payload }) => {
-        return ajax(buildRequest({
+    mergeMap(({ payload }) => concat(
+        of(setGlobalLoading(true)),
+        ajax(buildRequest({
             url: `${baseUrl}/movies`,
             method: 'POST',
             body: payload,
         })).pipe(
-            map(({ response }) => addMovieSuccess(response)),
-            catchError((e) =>  of(addMovieFailure(e))),
-            finalize(() => dispatch(setGlobalLoading(false))),
-        );
-    }),
+            mergeMap(({ response }) => of(setGlobalLoading(false), addMovieSuccess(response))),
+            catchError((e) =>  of(setGlobalLoading(false), addMovieFailure(e))),
+        ),
+    )),
 );
 
-const editMovieEpic = (actions$, { dispatch }, { ajax }) => actions$.pipe(
+const editMovieEpic = (actions$, _, { ajax }) => actions$.pipe(
     ofType(ActionTypes.EDIT_MOVIE),
-    tap(() => dispatch(setGlobalLoading(true))),
-    mergeMap(({ payload }) => {
-        return ajax(buildRequest({
+    mergeMap(({ payload }) => concat(
+        of(setGlobalLoading(true)),
+        ajax(buildRequest({
             url: `${baseUrl}/movies`,
             method: 'PUT',
             body: payload,
         })).pipe(
-            map(({ response }) => editMovieSuccess(response)),
-            catchError((e) =>  of(editMovieFailure(e))),
-            finalize(() => dispatch(setGlobalLoading(false))),
-        );
-    }),
+            mergeMap(({ response }) => of(setGlobalLoading(false), editMovieSuccess(response))),
+            catchError((e) =>  of(setGlobalLoading(false), editMovieFailure(e))),
+        ),
+    )),
 );
 
-const deleteMovieEpic = (actions$, { dispatch }, { ajax }) => actions$.pipe(
+const deleteMovieEpic = (actions$, _, { ajax }) => actions$.pipe(
     ofType(ActionTypes.DELETE_MOVIE),
-    tap(() => dispatch(setGlobalLoading(true))),
-    mergeMap(({ payload }) => {
-         return ajax(buildRequest({
+    mergeMap(({ payload }) => concat(
+        of(setGlobalLoading(true)),
+        ajax(buildRequest({
             url: `${baseUrl}/movies/${payload}`,
             method: 'DELETE',
         })).pipe(
-            map(() => deleteMovieSuccess(payload)),
-            catchError((e) =>  of(deleteMovieFailure(e))),
-            finalize(() => dispatch(setGlobalLoading(false))),
-        );
-    }),
+            mergeMap(() => of(setGlobalLoading(false), deleteMovieSuccess(payload))),
+            catchError((e) =>  of(setGlobalLoading(false), deleteMovieFailure(e))),
+        ),
+    )),
 );
 
 const buildRequest = ({ url, method, body }) => ({
