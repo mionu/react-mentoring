@@ -43,7 +43,7 @@ describe('Search', () => {
         expect(component.toJSON).toMatchSnapshot();
 
         const search = component.root.findByType(TextField);
-        expect(search).toBeDefined();
+        expect(search).not.toBeDefined();
         expect(search.props.value).toBe(searchTerm);
     });
 });
