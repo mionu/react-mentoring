@@ -17,6 +17,7 @@ function App(props) {
     }
   }, []);
 
+  /* eslint-disable react/jsx-filename-extension, react/jsx-props-no-spreading */
   return (
     <>
       <Head>
@@ -25,14 +26,15 @@ function App(props) {
       </Head>
       <Component {...pageProps} />
     </>
+  /* eslint-enable react/jsx-filename-extension, react/jsx-props-no-spreading */
   );
 }
 
 App.getInitialProps = async ({ Component, ctx }) => {
-    const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
+  const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
 
-    return { pageProps };
-}
+  return { pageProps };
+};
 
 const connected = wrapper.withRedux(withObservable(rootEpic)(App));
 
@@ -40,5 +42,6 @@ export default connected;
 
 App.propTypes = {
   Component: PropTypes.elementType.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
   pageProps: PropTypes.object.isRequired,
 };

@@ -1,13 +1,16 @@
 import React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, {
+  Html, Head, Main, NextScript,
+} from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 
 export default class MyDocument extends Document {
   render() {
+    /* eslint-disable react/jsx-filename-extension, react/jsx-props-no-spreading */
     return (
       <Html lang="en">
         <Head>
-        <style data-next-hide-fouc="true" dangerouslySetInnerHTML={{__html: `body { display: block !important }`}}></style>
+          <style data-next-hide-fouc="true" dangerouslySetInnerHTML={{ __html: 'body { display: block !important }' }} />
         </Head>
         <body>
           <Main />
@@ -15,6 +18,7 @@ export default class MyDocument extends Document {
         </body>
       </Html>
     );
+    /* eslint-enable react/jsx-filename-extension, react/jsx-props-no-spreading */
   }
 }
 
@@ -47,10 +51,10 @@ MyDocument.getInitialProps = async (ctx) => {
   const sheets = new ServerStyleSheets();
   const originalRenderPage = ctx.renderPage;
 
-  ctx.renderPage = () =>
-    originalRenderPage({
-      enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
-    });
+  ctx.renderPage = () => originalRenderPage({
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+  });
 
   const initialProps = await Document.getInitialProps(ctx);
 

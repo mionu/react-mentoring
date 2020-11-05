@@ -1,49 +1,28 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router';
-import configureStore from 'redux-mock-store';
+import { RouterContext } from 'next/dist/next-server/lib/router-context';
 import renderer from 'react-test-renderer';
 import { TextField } from '@material-ui/core';
 import Search from './Search';
 
+/* eslint-disable no-undef, react/jsx-filename-extension */
 describe('Search', () => {
-    beforeAll(() => jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect));
-    afterAll(() => React.useEffect.mockRestore());
+  beforeAll(() => jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect));
+  afterAll(() => React.useEffect.mockRestore());
 
-    const mockStore = configureStore([]);
-    let store;
+  it('should render', () => {
+    const searchTerm = 'search';
 
-    beforeEach(() => {
-        store = mockStore({
-            movies: {
-                options: {},
-            },
-        });
-    });
+    const component = renderer.create(
+      <RouterContext.Provider value={{ query: { query: searchTerm } }}>
+        <Search />
+      </RouterContext.Provider>,
+    );
 
-    it('should render', () => {
-        const searchTerm = 'search';
+    expect(component.toJSON).toMatchSnapshot();
 
-        store = mockStore({
-            movies: {
-                options: { search: searchTerm },
-            },
-        });
-
-        const component = renderer.create(
-            <MemoryRouter initialEntries={['search/a']}>
-                <Route path='search/:searchTerm'>
-                    <Provider store={store}>
-                        <Search />
-                    </Provider>
-                </Route>
-            </MemoryRouter>
-        );
-
-        expect(component.toJSON).toMatchSnapshot();
-
-        const search = component.root.findByType(TextField);
-        expect(search).toBeDefined();
-        expect(search.props.value).toBe(searchTerm);
-    });
+    const search = component.root.findByType(TextField);
+    expect(search).toBeDefined();
+    expect(search.props.value).toBe(searchTerm);
+  });
 });
+/* eslint-enable no-undef, react/jsx-filename-extension */

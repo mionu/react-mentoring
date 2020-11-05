@@ -3,7 +3,8 @@
 exports[`Image should accept width and height props 1`] = `
 Array [
   <img
-    className="makeStyles-notVisible-1"
+    alt=""
+    className="makeStyles-notVisible-2"
     height={750}
     onError={[Function]}
     onLoad={[Function]}
@@ -11,9 +12,9 @@ Array [
     width={500}
   />,
   <img
-    className="makeStyles-visible-2"
+    alt=""
+    className="makeStyles-noImage-1 makeStyles-visible-3"
     height={750}
-    src="/no-image.png"
     width={500}
   />,
 ]
@@ -22,7 +23,8 @@ Array [
 exports[`Image should change visible image after loading 1`] = `
 Array [
   <img
-    className="makeStyles-notVisible-1"
+    alt=""
+    className="makeStyles-notVisible-2"
     height={400}
     onError={[Function]}
     onLoad={[Function]}
@@ -30,9 +32,9 @@ Array [
     width={300}
   />,
   <img
-    className="makeStyles-visible-2"
+    alt=""
+    className="makeStyles-noImage-1 makeStyles-visible-3"
     height={400}
-    src="/no-image.png"
     width={300}
   />,
 ]
@@ -41,7 +43,8 @@ Array [
 exports[`Image should change visible image after loading 2`] = `
 Array [
   <img
-    className="makeStyles-visible-2"
+    alt=""
+    className="makeStyles-visible-3"
     height={400}
     onError={[Function]}
     onLoad={[Function]}
@@ -49,9 +52,9 @@ Array [
     width={300}
   />,
   <img
-    className="makeStyles-notVisible-1"
+    alt=""
+    className="makeStyles-noImage-1 makeStyles-notVisible-2"
     height={400}
-    src="/no-image.png"
     width={300}
   />,
 ]
@@ -60,7 +63,8 @@ Array [
 exports[`Image should keep fallback image if image not loaded 1`] = `
 Array [
   <img
-    className="makeStyles-notVisible-1"
+    alt=""
+    className="makeStyles-notVisible-2"
     height={400}
     onError={[Function]}
     onLoad={[Function]}
@@ -68,9 +72,9 @@ Array [
     width={300}
   />,
   <img
-    className="makeStyles-visible-2"
+    alt=""
+    className="makeStyles-noImage-1 makeStyles-visible-3"
     height={400}
-    src="/no-image.png"
     width={300}
   />,
 ]
@@ -79,7 +83,8 @@ Array [
 exports[`Image should keep fallback image if image not loaded 2`] = `
 Array [
   <img
-    className="makeStyles-notVisible-1"
+    alt=""
+    className="makeStyles-notVisible-2"
     height={400}
     onError={[Function]}
     onLoad={[Function]}
@@ -87,9 +92,9 @@ Array [
     width={300}
   />,
   <img
-    className="makeStyles-visible-2"
+    alt=""
+    className="makeStyles-noImage-1 makeStyles-visible-3"
     height={400}
-    src="/no-image.png"
     width={300}
   />,
 ]
@@ -98,7 +103,8 @@ Array [
 exports[`Image should render correctly 1`] = `
 Array [
   <img
-    className="makeStyles-notVisible-1"
+    alt=""
+    className="makeStyles-notVisible-2"
     height={400}
     onError={[Function]}
     onLoad={[Function]}
@@ -106,9 +112,9 @@ Array [
     width={300}
   />,
   <img
-    className="makeStyles-visible-2"
+    alt=""
+    className="makeStyles-noImage-1 makeStyles-visible-3"
     height={400}
-    src="/no-image.png"
     width={300}
   />,
 ]

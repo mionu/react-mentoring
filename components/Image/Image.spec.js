@@ -2,54 +2,56 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import Image from './Image';
 
+/* eslint-disable no-undef, react/jsx-filename-extension */
 describe('Image', () => {
-    it('should render correctly', () => {
-        const tree = renderer
-            .create(<Image src='http://asd.com' />)
-            .toJSON();
-        
-        expect(tree).toMatchSnapshot();
-    });
+  it('should render correctly', () => {
+    const tree = renderer
+      .create(<Image src="http://asd.com" />)
+      .toJSON();
 
-    it('should accept width and height props', () => {
-        const tree = renderer
-            .create(<Image width={500} height={750} src='http://asd.com' />)
-            .toJSON();
-        
-        expect(tree).toMatchSnapshot();
-    });
+    expect(tree).toMatchSnapshot();
+  });
 
-    it('should change visible image after loading', () => {
-        const component = renderer.create(
-            <Image src='http://asd.com' />
-        );
+  it('should accept width and height props', () => {
+    const tree = renderer
+      .create(<Image width={500} height={750} src="http://asd.com" />)
+      .toJSON();
 
-        let tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+    expect(tree).toMatchSnapshot();
+  });
 
-        const img = component.root.findAllByType('img')[0];
-        expect(img).toBeDefined();
-        
-        act(() => img.props.onLoad());
+  it('should change visible image after loading', () => {
+    const component = renderer.create(
+      <Image src="http://asd.com" />,
+    );
 
-        tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
 
-    it('should keep fallback image if image not loaded', () => {
-        const component = renderer.create(
-            <Image src='http://asd.com' />
-        );
+    const img = component.root.findAllByType('img')[0];
+    expect(img).toBeDefined();
 
-        let tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+    act(() => img.props.onLoad());
 
-        const img = component.root.findAllByType('img')[0];
-        expect(img).toBeDefined();
-        
-        act(() => img.props.onError());
+    tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 
-        tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
+  it('should keep fallback image if image not loaded', () => {
+    const component = renderer.create(
+      <Image src="http://asd.com" />,
+    );
+
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+
+    const img = component.root.findAllByType('img')[0];
+    expect(img).toBeDefined();
+
+    act(() => img.props.onError());
+
+    tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });
+/* eslint-enable no-undef, react/jsx-filename-extension */
