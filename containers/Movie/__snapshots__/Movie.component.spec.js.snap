@@ -83,7 +83,7 @@ Array [
     >
       <img
         alt="<No title>"
-        className="makeStyles-notVisible-13"
+        className="makeStyles-notVisible-14"
         height={500}
         onError={[Function]}
         onLoad={[Function]}
@@ -92,9 +92,8 @@ Array [
       />
       <img
         alt="<No title>"
-        className="makeStyles-visible-14"
+        className="makeStyles-noImage-13 makeStyles-visible-15"
         height={500}
-        src="/no-image.png"
         width={350}
       />
       <div
@@ -119,7 +118,9 @@ Array [
         >
           <h6
             className="MuiTypography-root MuiTypography-h6"
-          />
+          >
+            
+          </h6>
           <h6
             className="MuiTypography-root MuiTypography-h6 makeStyles-ml20-4"
           >
@@ -134,7 +135,7 @@ Array [
       </div>
     </div>
     <div
-      className="makeStyles-flexSpaceBetween-16"
+      className="makeStyles-flexSpaceBetween-17"
     >
       <div
         className="MuiTabs-root"
@@ -157,7 +158,7 @@ Array [
           >
             <button
               aria-selected={true}
-              className="MuiButtonBase-root MuiTab-root makeStyles-root-20 MuiTab-textColorInherit Mui-selected"
+              className="MuiButtonBase-root MuiTab-root makeStyles-root-21 MuiTab-textColorInherit Mui-selected"
               disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
@@ -186,7 +187,7 @@ Array [
             </button>
             <button
               aria-selected={false}
-              className="MuiButtonBase-root MuiTab-root makeStyles-root-20 MuiTab-textColorInherit"
+              className="MuiButtonBase-root MuiTab-root makeStyles-root-21 MuiTab-textColorInherit"
               disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
@@ -215,7 +216,7 @@ Array [
             </button>
             <button
               aria-selected={false}
-              className="MuiButtonBase-root MuiTab-root makeStyles-root-20 MuiTab-textColorInherit"
+              className="MuiButtonBase-root MuiTab-root makeStyles-root-21 MuiTab-textColorInherit"
               disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
@@ -244,7 +245,7 @@ Array [
             </button>
             <button
               aria-selected={false}
-              className="MuiButtonBase-root MuiTab-root makeStyles-root-20 MuiTab-textColorInherit"
+              className="MuiButtonBase-root MuiTab-root makeStyles-root-21 MuiTab-textColorInherit"
               disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
@@ -273,7 +274,7 @@ Array [
             </button>
             <button
               aria-selected={false}
-              className="MuiButtonBase-root MuiTab-root makeStyles-root-20 MuiTab-textColorInherit"
+              className="MuiButtonBase-root MuiTab-root makeStyles-root-21 MuiTab-textColorInherit"
               disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
@@ -302,7 +303,7 @@ Array [
             </button>
           </div>
           <span
-            className="PrivateTabIndicator-root-21 PrivateTabIndicator-colorSecondary-23 MuiTabs-indicator"
+            className="PrivateTabIndicator-root-22 PrivateTabIndicator-colorSecondary-24 MuiTabs-indicator"
             style={
               Object {
                 "left": 0,
@@ -313,7 +314,7 @@ Array [
         </div>
       </div>
       <div
-        className="MuiFormControl-root MuiTextField-root makeStyles-select-25 MuiFormControl-marginDense"
+        className="MuiFormControl-root MuiTextField-root makeStyles-select-26 MuiFormControl-marginDense"
       >
         <label
           className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
@@ -359,10 +360,10 @@ Array [
           </svg>
           <fieldset
             aria-hidden={true}
-            className="PrivateNotchedOutline-root-26 MuiOutlinedInput-notchedOutline"
+            className="PrivateNotchedOutline-root-27 MuiOutlinedInput-notchedOutline"
           >
             <legend
-              className="PrivateNotchedOutline-legendLabelled-28 PrivateNotchedOutline-legendNotched-29"
+              className="PrivateNotchedOutline-legendLabelled-29 PrivateNotchedOutline-legendNotched-30"
             >
               <span>
                 SORT BY
@@ -373,7 +374,7 @@ Array [
       </div>
     </div>
     <div
-      className="makeStyles-emptyMoviesList-15"
+      className="makeStyles-emptyMoviesList-16"
     >
       <h1>
         No movies found

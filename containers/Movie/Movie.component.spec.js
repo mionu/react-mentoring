@@ -5,42 +5,45 @@ import configureStore from 'redux-mock-store';
 import renderer from 'react-test-renderer';
 import MovieComponent from './Movie.component';
 
+/* eslint-disable no-undef, react/jsx-filename-extension, react/jsx-props-no-spreading */
 describe('MovieComponent', () => {
-    beforeAll(() => jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect));
-    afterAll(() => React.useEffect.mockRestore());
-    
-    const mockProps = {
-        getMovieById: jest.fn(),
-    };
-    const mockStore = configureStore([]);
-    window.scrollTo = jest.fn();
+  beforeAll(() => jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect));
+  afterAll(() => React.useEffect.mockRestore());
 
-    let store;
+  const mockProps = {
+    getMovieById: jest.fn(),
+    moviesList: [],
+  };
+  const mockStore = configureStore([]);
+  window.scrollTo = jest.fn();
 
-    beforeEach(() => {
-        store = mockStore({
-            movies: {
-                list: [],
-                options: {},
-            },
-            shared: {
-                loading: {},
-            },
-        });
+  let store;
+
+  beforeEach(() => {
+    store = mockStore({
+      movies: {
+        list: [],
+        options: {},
+      },
+      shared: {
+        loading: {},
+      },
     });
+  });
 
-    it('should render', () => {        
-        const tree = renderer
-            .create(
-                <MemoryRouter initialEntries={['film/123']}>
-                    <Route path='film/:filmId'>
-                        <Provider store={store}>
-                            <MovieComponent {...mockProps} />
-                        </Provider>
-                    </Route>
-                </MemoryRouter>
-            ).toJSON();
-        
-        expect(tree).toMatchSnapshot();
-    });
+  it('should render', () => {
+    const tree = renderer
+      .create(
+        <MemoryRouter initialEntries={['film/123']}>
+          <Route path="film/:filmId">
+            <Provider store={store}>
+              <MovieComponent {...mockProps} />
+            </Provider>
+          </Route>
+        </MemoryRouter>,
+      ).toJSON();
+
+    expect(tree).toMatchSnapshot();
+  });
 });
+/* eslint-enable no-undef, react/jsx-filename-extension, react/jsx-props-no-spreading */

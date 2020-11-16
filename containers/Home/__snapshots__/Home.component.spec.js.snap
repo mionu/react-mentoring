@@ -113,7 +113,7 @@ Array [
             onFocus={[Function]}
             required={false}
             type="text"
-            value=""
+            value="a"
           />
           <fieldset
             aria-hidden={true}
